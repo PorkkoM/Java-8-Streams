@@ -1,7 +1,6 @@
-package cz.bouda.streams;
+package cz.bouda.streams.trigger;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -11,7 +10,13 @@ public class Trigger {
 		Method[] methods = clazz.getDeclaredMethods();
 		for (Method method : methods) {
 			if (!StringUtils.equals("main", method.getName()) && !StringUtils.startsWith(method.getName(), "lambda")) {
-				System.out.println("\n --- " + method.getName());
+				if (method.isAnnotationPresent(Description.class)) {
+					Description description = method.getDeclaredAnnotation(Description.class);
+					System.out.println("\n --- " + description.value());
+				} else {
+					System.out.println("\n --- " + method.getName());
+				}
+
 				try {
 					method.invoke(clazz);
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {

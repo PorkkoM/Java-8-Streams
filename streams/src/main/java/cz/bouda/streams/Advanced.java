@@ -1,21 +1,14 @@
 package cz.bouda.streams;
 
-import java.util.Arrays;
-import java.util.IntSummaryStatistics;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import cz.bouda.streams.domain.Person;
+import cz.bouda.streams.trigger.Trigger;
 
 public class Advanced {
 
-	private static List<Person> persons =
-			Arrays.asList(
-					new Person("Max", 18),
-					new Person("Peter", 23),
-					new Person("Pamela", 23),
-					new Person("David", 12));
+	private static List<Person> persons = Arrays.asList(new Person("Max", 18), new Person("Peter", 23), new Person("Pamela", 23), new Person("David", 12));
 
 	public static void main(String... args) {
 		Trigger.run(Advanced.class);
@@ -30,28 +23,19 @@ public class Advanced {
 	 * various built-in collectors via the Collectors class. So for the most
 	 * common operations you don't have to implement a collector yourself.
 	 */
-	static void collector() {
-		List<Person> filtered =
-				persons
-						.stream()
-						.filter(p -> p.name.startsWith("P"))
-						.collect(Collectors.toList());
+	public static void collector() {
+		List<Person> filtered = persons.stream().filter(p -> p.name.startsWith("P")).collect(Collectors.toList());
 		System.out.println(filtered);
 	}
 
-	static void collector_group_by_age() {
-		Map<Integer, List<Person>> personsByAge = persons
-				.stream()
-				.collect(Collectors.groupingBy(p -> p.age));
+	public static void collector_group_by_age() {
+		Map<Integer, List<Person>> personsByAge = persons.stream().collect(Collectors.groupingBy(p -> p.age));
 
-		personsByAge
-				.forEach((age, p) -> System.out.format("age %s: %s\n", age, p));
+		personsByAge.forEach((age, p) -> System.out.format("age %s: %s\n", age, p));
 	}
 
-	static void collector_average() {
-		Double averageAge = persons
-				.stream()
-				.collect(Collectors.averagingInt(p -> p.age));
+	public static void collector_average() {
+		Double averageAge = persons.stream().collect(Collectors.averagingInt(p -> p.age));
 
 		System.out.println(averageAge);
 	}
@@ -62,11 +46,8 @@ public class Advanced {
 	 * simply determine min, max and arithmetic average age of the persons as
 	 * well as the sum and count.
 	 */
-	static void summary_statistics() {
-		IntSummaryStatistics ageSummary =
-				persons
-						.stream()
-						.collect(Collectors.summarizingInt(p -> p.age));
+	public static void summary_statistics() {
+		IntSummaryStatistics ageSummary = persons.stream().collect(Collectors.summarizingInt(p -> p.age));
 
 		System.out.println(ageSummary);
 	}
@@ -74,12 +55,8 @@ public class Advanced {
 	/*
 	 * The next example joins all persons into a single string
 	 */
-	static void joining_into_into_a_single_string() {
-		String phrase = persons
-				.stream()
-				.filter(p -> p.age >= 18)
-				.map(p -> p.name)
-				.collect(Collectors.joining(" and ", "In Germany ", " are of legal age."));
+	public static void joining_into_into_a_single_string() {
+		String phrase = persons.stream().filter(p -> p.age >= 18).map(p -> p.name).collect(Collectors.joining(" and ", "In Germany ", " are of legal age."));
 
 		System.out.println(phrase);
 	}
@@ -91,13 +68,8 @@ public class Advanced {
 	 * You can optionally pass a merge function as an additional parameter to
 	 * bypass the exception:
 	 */
-	static void grouping_into_a_map() {
-		Map<Integer, String> map = persons
-				.stream()
-				.collect(Collectors.toMap(
-						p -> p.age,
-						p -> p.name,
-						(name1, name2) -> name1 + ";" + name2));
+	public static void grouping_into_a_map() {
+		Map<Integer, String> map = persons.stream().collect(Collectors.toMap(p -> p.age, p -> p.name, (name1, name2) -> name1 + ";" + name2));
 
 		System.out.println(map);
 	}
